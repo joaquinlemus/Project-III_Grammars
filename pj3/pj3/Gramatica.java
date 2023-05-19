@@ -29,10 +29,26 @@ public class Gramatica {
 
 		AFN afn = new AFN(rules, alphabet, states, lambda);
 		System.out.println(rules);
-		System.out.println(afn.filterStates());
-		System.out.println(afn.filterInstructions());
-		List<String> y = afn.filterStates();
-		
+
+		List<String> x = afn.filterInstructions(rules);
+		List<String> y = afn.filterStates(rules);
+		System.out.println(y);
+		System.out.println(y);
+		System.out.println(y);
+		System.out.println(y);
+		System.out.println(y);
+		System.out.println(y);
+		System.out.println(y);
+
+		System.out.println(x);
+		System.out.println(x);
+		System.out.println(x);
+		System.out.println(x);
+		System.out.println(x);
+		System.out.println(x);		
+		System.out.println(y);
+
+
 		afn.printMatrix(afn.afnMatrix(y));
 
 
