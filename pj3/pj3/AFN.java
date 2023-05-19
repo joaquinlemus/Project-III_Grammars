@@ -67,11 +67,17 @@ public class AFN {
     }
 
 
-    public List<String> filterStates() {
+    public List<String> filterStates(ConcurrentLinkedQueue<String> grammar) {
+        // link copia grammar y es la que se edita para que zelda trabaje y saque los estados
+        ConcurrentLinkedQueue<String> link = new ConcurrentLinkedQueue<>(grammar);
+        ConcurrentLinkedQueue<String> zelda = new ConcurrentLinkedQueue<>();
+        while (!link.isEmpty()) {
+            zelda.add(link.poll());
+        }
         List<String> filterStates = new ArrayList<>();
-        while (!grammar.isEmpty()) {
+        while (!zelda.isEmpty()) {
             String state = null;
-            String x =  grammar.peek();
+            String x =  zelda.peek();
             String[] y = x.split("");
             int LENGTH = x.length();
             if (LENGTH == 5) {
@@ -92,14 +98,20 @@ public class AFN {
             if (!filterStates.contains(state)) {
                 filterStates.add(state);
             }
-            grammar.poll();
+            zelda.poll();
         }
         return filterStates;
     }
 
 
-    public ArrayList<String> filterInstructions() {
-        ArrayList<String> instructions = new ArrayList<>();
+    public List<String> filterInstructions(ConcurrentLinkedQueue<String> grammar) {
+        // mario copia grammar y es la que se edita para que peach trabaje y saque las instrucciones
+        ConcurrentLinkedQueue<String> mario = new ConcurrentLinkedQueue<>(grammar);
+        ConcurrentLinkedQueue<String> peach = new ConcurrentLinkedQueue<>();
+        while (!mario.isEmpty()) {
+            peach.add(mario.poll());
+        }
+        List<String> instructions = new ArrayList<>();
         while (!unchanged.isEmpty()) {
             String inst = null;
             String x =  unchanged.peek();
