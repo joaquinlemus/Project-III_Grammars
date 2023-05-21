@@ -21,6 +21,7 @@ public class Gramatica {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		
 		ArrayList<String> nonTerminal = new ArrayList<>(Arrays.asList(grammar.get(0).split(",")));
 		ConcurrentLinkedQueue<String> rules = productionRules(getRules(grammar), nonTerminal);
 		ArrayList<String> alphabet = new ArrayList<>(Arrays.asList(grammar.get(1).split(",")));
@@ -32,6 +33,8 @@ public class Gramatica {
 
 		List<String> x = afn.filterInstructions(rules);
 		List<String> y = afn.filterStates(rules);
+		List<String> z = afn.convertStringStatesToNumbers(y);
+		
 		System.out.println(y);
 		System.out.println(y);
 		System.out.println(y);
@@ -40,6 +43,7 @@ public class Gramatica {
 		System.out.println(y);
 		System.out.println(y);
 
+		
 		System.out.println(x);
 		System.out.println(x);
 		System.out.println(x);
@@ -47,9 +51,17 @@ public class Gramatica {
 		System.out.println(x);
 		System.out.println(x);		
 		System.out.println(y);
-
-
+		
+		
 		afn.printMatrix(afn.afnMatrix(y));
+		String[][] r = afn.afnMatrix(y);
+		System.out.println(y.get(1));
+		System.out.println(z.get(1));
+		afn.fillAFNMatrix(r, "X->cY", states, alphabet);
+		afn.printMatrix(r);
+		System.out.println(rules);
+		System.out.println(y);
+		System.out.println(afn.integrateNewStates(rules, y, alphabet));
 
 
 

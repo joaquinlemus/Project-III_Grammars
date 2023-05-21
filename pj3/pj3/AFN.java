@@ -1,6 +1,9 @@
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
+
+import javax.xml.stream.events.StartElement;
 
 public class AFN {
 
@@ -47,20 +50,99 @@ public class AFN {
     }
 
 
+    
     public String[][] afnMatrix(List<String> states) {
         String[][] afn = new String[states.size()][this.alphabet.size() + 1];
+        int counter = 1;
         for (int i = 0; i < afn.length; i++) {
             for (int j = 0; j < afn[i].length; j++) {
-                afn[i][j] = "0";
+                if (j == afn[i].length - 1) {
+                    afn[i][j] = String.valueOf(counter);
+                } else {
+                    afn[i][j] = "0";
+                }
             }
+            counter++;
         }
         return afn;
     }
+    
+    
+    public void fillAFNMatrix(String[][] matrix, String instruction, List<String> states, ArrayList<String> alphabet) {
+
+
+        // W->B -> 4
+        // W->b -> 4
+        // W->aX -> 5
+        // W->aW1 -> 6
+        // W1->aX -> 6
+        // W1->aW2 -> 7
+
+        if (instruction.length() == 4) {
+            
+        } else if (instruction.length() == 5) {
+            String row = String.valueOf(instruction.charAt(0)); 
+            String column = String.valueOf(instruction.charAt(3)); 
+            String state = String.valueOf(instruction.charAt(4));
+            changeAFNMatrix(matrix, states.indexOf(state)+1, states.indexOf(row), alphabet.indexOf(column));
+        }
+    }
+
+    // [W->aW1, W1->bX, X->bX, X->b, X->cY, Y->cY, Y->c, Y->d]
+    // [W, W1, X, Y]
+    // 3 estados nuevos -> X->b; Y->c; Y->d
+    // X->b => X -> J
+    // Y->c => Y -> K
+    // Y->d => Y -> Z
+    // [W, W1, X, J, Y, K, Z]
+
+    public List<String> integrateNewStates(ConcurrentLinkedQueue<String> grammar, List<String> states, List<String> alphabet) {
+        ConcurrentLinkedQueue<String> zelda = new ConcurrentLinkedQueue<>(grammar);
+        List<String> integratedStates = new LinkedList<>(states);
+        List<String> instructions = new ArrayList<>();
+        List<String> link = new ArrayList<>();
+        int counter = 0;
+        char green_goblin = 74;
+        while (!zelda.isEmpty()) {
+            instructions.add(zelda.poll());
+        }
+
+        for (String inst : instructions) {
+            if (inst.length() == 4 && alphabet.contains(String.valueOf(inst.charAt(3)))) {
+                link.add(inst);
+                counter++;
+            }
+        }
+
+        if (counter == 0) {
+            return null;
+        } else {
+            String state = null;
+            for (String hen : link) {
+                if (hen.charAt(1) == '-') {
+                    state = String.valueOf(hen.charAt(0));
+                } else {
+                    state = String.valueOf(hen.charAt(0)) + "" + String.valueOf(hen.charAt(hen.charAt(1)));
+                }
+                String newState = String.valueOf(green_goblin);
+                System.out.println(states.indexOf(state));
+                integratedStates.add(states.indexOf(state)+1, newState);
+                green_goblin++;
+            }
+        }
+        return integratedStates;
+    }
+
+
+    public void changeAFNMatrix(String[][] matrix, int state, int row, int column) {
+        matrix[row][column] = String.valueOf(state);
+    }
+
 
     public void printMatrix(String[][] matrix) {
         for (String[] row : matrix) {
-            for (String elem: row) {
-                System.out.print(elem);
+            for (String elem : row) {
+                System.out.print(elem + " ");
             }
             System.out.println();
         }
@@ -139,5 +221,17 @@ public class AFN {
             unchanged.poll();
         }
         return instructions;
+    }
+
+
+    public List<String> convertStringStatesToNumbers(List<String> states) {
+        List<String> statesAsNumbers = new ArrayList<>();
+        int counter = 1;
+        for (String state : states) {
+            state = String.valueOf(counter);
+            statesAsNumbers.add(String.valueOf(state));
+            counter++;
+        }
+        return statesAsNumbers;
     }
 }
